@@ -1,0 +1,15 @@
+from fastapi import FastAPI
+
+from todoapp.core.config import settings
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+)
+
+
+@app.get("/")
+def root():
+    return {
+        "message": "Production Todo API",
+    }
