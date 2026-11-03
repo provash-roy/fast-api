@@ -1,26 +1,4 @@
-# Virtual Environment
 .venv/
-
-# Python cache
 __pycache__/
-*.py[cod]
-
-# Environment
 .env
-
-# IDE
-.vscode/
-.idea/
-
-# Test
 .pytest_cache/
-
-# Ruff
-.ruff_cache/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log

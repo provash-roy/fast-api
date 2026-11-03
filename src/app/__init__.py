@@ -1,2 +1,2 @@
 def main() -> None:
-    print("Hello from fastapi!")
+    print("Hello from fast-api!")
