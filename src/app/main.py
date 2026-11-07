@@ -1,41 +1,23 @@
-from contextlib import asynccontextmanager
+from fastapi import Depends, FastAPI
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import FastAPI
-from sqlalchemy import text
-
-from app.db.session import engine
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Application startup
-    yield
-
-    # Application shutdown
-    await engine.dispose()
+from app.db.models import User
+from app.db.session import get_db
+from app.schemas import UserCreate, UserResponse
 
 
-app = FastAPI(
-    title="FastAPI Neon Database",
-    lifespan=lifespan,
-)
+app = FastAPI()
 
 
 @app.get("/")
-async def root():
-    return {
-        "message": "FastAPI is running"
-    }
+def read_root() -> dict[str, str]:
+    return {"message": "Hello, World!"}
 
 
-@app.get("/health")
-async def health_check():
-    async with engine.connect() as connection:
-        result = await connection.execute(
-            text("SELECT 1")
-        )
-
-        return {
-            "database": "connected",
-            "result": result.scalar_one(),
-        }
+@app.post("/user", response_model=UserResponse)
+async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+    db_user = User(name=user.name, email=user.email)
+    db.add(db_user)
+    await db.commit()
+    await db.refresh(db_user)
+    return db_user
